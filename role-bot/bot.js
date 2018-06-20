@@ -1,15 +1,35 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
+const config = require('./auth.json');
 
 client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+  console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
+  
+  client.user.setActivity('Serving ${client.guilds.size} servers');
 });
 
-client.on('message', msg => {
-  if (msg.content === '!hi') {
-    msg.reply('Hello!');
+client.on('message', async message => {
+  if(message.author.bot) return;
+  if(message.content.indexOf(config.prefix) !== 0) return;
+  
+  const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+  const command = args.shift().toLowerCase();
+	
+    if(command === "ping") {
+    // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
+    // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
+    const m = await message.channel.send("Ping?");
+    m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
   }
+  	
+  if (message.content === '!hi') {
+	message.reply('Hello!');
+  }
+  
+  
+  
 });
+
 /*
 client.on('guildMemberAdd', member => {
   const channel = member.guild.channels.find('name', 'member-log');
@@ -18,4 +38,3 @@ client.on('guildMemberAdd', member => {
 });
 */
 
-client.login('NDQ1NDUxNDk2OTU2NjI0ODk4.DdvM5Q.mN7i4ZaOzqU2eY-5BmjKg-5X6q0');
