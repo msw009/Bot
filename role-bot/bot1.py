@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 # 1
 from discord.ext import commands
+from discord import File
 
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
@@ -32,7 +33,7 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You do not have the correct role for this command.')
 
-@bot.command(name='print', help='Simulates rolling dice.')		
+@bot.command(name='mw_members', help='Simulates rolling dice.')		
 async def stat(ctx):
     """Returns a CSV file of all users on the server."""
     await bot.request_offline_members(ctx.message.guild)
@@ -42,8 +43,7 @@ async def stat(ctx):
         writer = csv.writer(f, dialect='excel')
         for v in nicknames:
             writer.writerow([v])
-    after = time.time()  
-	await bot.send(ctx.message.author, file='temp.csv', 
-                        content="Here you go! Check your PM's. Generated in {:.4}ms.".format((after - before)*1000))
+    after = time.time()
+    await ctx.send(file=File('temp.csv'))
 	
 bot.run(token)
