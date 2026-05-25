@@ -60,3 +60,6 @@ typings/
 # next.js build output
 .next
 role-bot/temp.csv
+
+# Claude Code local user settings
+.claude/settings.local.json
